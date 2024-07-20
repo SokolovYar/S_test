@@ -1,14 +1,16 @@
 using S_Editor;
-using static System.Net.Mime.MediaTypeNames;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace WinFormsApp1
 {
     public partial class Form1 : Form
     {
         private Test MyTest;
-        private QuestionClass selectedQuestion;
-
+        private QuestionClass? selectedQuestion;
+        private Section? selectedSection;
 
         public Form1()
         {
@@ -20,23 +22,11 @@ namespace WinFormsApp1
                 {
                     new Section(new ObservableCollection<QuestionClass>
                     {
-                        new QuestionClass("Type question here", new ObservableCollection<Answer>
-                        {
-                            new Answer("Answer #1", true),
-                            new Answer("Answer #2", false),
-                            new Answer("Answer #3", false),
-                            new Answer("Answer #4", false)
-                        }, 1, QuestionType.OnlyOne),
-
-                        new QuestionClass("Type question here2", new ObservableCollection<Answer>
-                        {
-                            new Answer("Answer #1", true),
-                            new Answer("Answer #2", false)
-                        }, 1, QuestionType.OnlyOne),
-
-                    }, "Section 1", false, 2)
+                       QuestionClass.EmptyQuestion,
+                    }, "Section 1", false, 1),
                 }, "Test Description");
 
+            DescriptionTableLayoutPanel.SetColumnSpan(Description_textBox, 2);
             LoadTestToTreeView(MyTest);
         }
 
@@ -63,11 +53,25 @@ namespace WinFormsApp1
 
         private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            ClearAnswerFields();
+
             if (e.Node.Tag is QuestionClass question)
             {
                 selectedQuestion = question;
-                richTextBox1.Text = question.Question;
-                var answers = question.Answers.ToList();
+                selectedSection = e.Node.Parent?.Tag as Section;
+                Description_textBox.Text = selectedQuestion.Question;
+                if (selectedQuestion.QImage != null)
+                {
+                    DescriptionTableLayoutPanel.SetColumnSpan(Description_textBox, 1);
+                    QPictureBox.Image = selectedQuestion.QImage;
+                }
+                else
+                {
+                    QPictureBox.Image = null;
+                    DescriptionTableLayoutPanel.SetColumnSpan(Description_textBox, 2);
+                }
+
+                var answers = selectedQuestion.Answers.ToList();
 
                 if (answers.Count > 0)
                 {
@@ -90,13 +94,19 @@ namespace WinFormsApp1
                     checkBox4.Checked = answers[3].isRight;
                 }
             }
+
+            if (e.Node.Tag is Section section)
+            {
+                selectedQuestion = null;
+                selectedSection = section;
+            }
         }
 
         private void Button1_Click(object sender, EventArgs e)
         {
             if (selectedQuestion != null)
             {
-                selectedQuestion.Question = richTextBox1.Text;
+                selectedQuestion.Question = Description_textBox.Text;
                 var answers = selectedQuestion.Answers;
 
                 if (answers.Count > 0)
@@ -119,8 +129,94 @@ namespace WinFormsApp1
                     answers[3].Description = textBox4.Text;
                     answers[3].isRight = checkBox4.Checked;
                 }
-                treeView.SelectedNode.Text = selectedQuestion.Question;
+
+                // Обновляем отображение текста выбранного узла в TreeView
+                //treeView.SelectedNode.Text = selectedQuestion.Question;
+                LoadTestToTreeView(MyTest);
             }
+        }
+
+        private void ClearAnswerFields()
+        {
+            textBox1.Text = string.Empty;
+            checkBox1.Checked = false;
+            textBox2.Text = string.Empty;
+            checkBox2.Checked = false;
+            textBox3.Text = string.Empty;
+            checkBox3.Checked = false;
+            textBox4.Text = string.Empty;
+            checkBox4.Checked = false;
+        }
+
+        private void addToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MyTest.AddSection();
+            LoadTestToTreeView(MyTest);
+        }
+
+        private void removeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedSection == null) return;
+            MyTest.DeleteSection(selectedSection);
+            LoadTestToTreeView(MyTest);
+        }
+
+        private void addToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (selectedSection == null) return;
+            selectedSection.AddQuestion();
+            LoadTestToTreeView(MyTest);
+        }
+
+        private void removeToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (selectedQuestion == null) return;
+            selectedSection = treeView.SelectedNode.Parent?.Tag as Section;
+            if (selectedSection != null)
+            {
+                selectedSection.Questions.Remove(selectedQuestion);
+                LoadTestToTreeView(MyTest);
+            }
+        }
+
+        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedSection == null) return;
+            SectionAdjust sa = new SectionAdjust(selectedSection);
+            DialogResult result = sa.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                selectedSection.isRandom = sa.IsRandom;
+                selectedSection.Count_Questions = sa.QToAsk;
+                selectedSection.Description = sa.Descr;
+            }
+            LoadTestToTreeView(MyTest);
+        }
+
+        private void addImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK && selectedQuestion != null)
+            {
+                string path = openFileDialog.FileName;
+                selectedQuestion.QImage = System.Drawing.Image.FromFile(path);
+                QPictureBox.Image = selectedQuestion.QImage; // Обновление PictureBox при добавлении изображения
+                LoadTestToTreeView(MyTest);
+            }
+        }
+
+        private void removeImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (selectedQuestion == null) return;
+
+            selectedQuestion.QImage = null;
+            QPictureBox.Image = null; // Обновление PictureBox при удалении изображения
+            LoadTestToTreeView(MyTest);
+        }
+
+        private void QPictureBox_Click(object sender, EventArgs e)
+        {
+            ImageForm imgForm = new ImageForm(QPictureBox.Image);
+            imgForm.ShowDialog();
         }
     }
 }

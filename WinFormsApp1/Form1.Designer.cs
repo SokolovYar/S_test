@@ -30,9 +30,18 @@ namespace WinFormsApp1
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             toolStripContainer1 = new ToolStripContainer();
             splitContainer1 = new SplitContainer();
             treeView = new TreeView();
+            contextMenu_TreeView = new ContextMenuStrip(components);
+            addNewSectionToolStripMenuItem = new ToolStripMenuItem();
+            addToolStripMenuItem = new ToolStripMenuItem();
+            removeToolStripMenuItem = new ToolStripMenuItem();
+            editToolStripMenuItem = new ToolStripMenuItem();
+            removeSelectedToolStripMenuItem = new ToolStripMenuItem();
+            addQuestionToolStripMenuItem = new ToolStripMenuItem();
+            removeToolStripMenuItem1 = new ToolStripMenuItem();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel6 = new TableLayoutPanel();
             checkBox4 = new CheckBox();
@@ -43,7 +52,6 @@ namespace WinFormsApp1
             tableLayoutPanel4 = new TableLayoutPanel();
             checkBox2 = new CheckBox();
             textBox2 = new TextBox();
-            richTextBox1 = new RichTextBox();
             panel1 = new Panel();
             label1 = new Label();
             button1 = new Button();
@@ -51,11 +59,18 @@ namespace WinFormsApp1
             tableLayoutPanel2 = new TableLayoutPanel();
             checkBox1 = new CheckBox();
             textBox1 = new TextBox();
+            DescriptionTableLayoutPanel = new TableLayoutPanel();
+            QPictureBox = new PictureBox();
+            Description_textBox = new TextBox();
+            Description_contextMenuStrip = new ContextMenuStrip(components);
+            addImageToolStripMenuItem = new ToolStripMenuItem();
+            removeImageToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             openToolStripMenuItem = new ToolStripMenuItem();
             saveToolStripMenuItem = new ToolStripMenuItem();
             tableLayoutPanel3 = new TableLayoutPanel();
+            openFileDialog = new OpenFileDialog();
             toolStripContainer1.ContentPanel.SuspendLayout();
             toolStripContainer1.TopToolStripPanel.SuspendLayout();
             toolStripContainer1.SuspendLayout();
@@ -63,6 +78,7 @@ namespace WinFormsApp1
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            contextMenu_TreeView.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel6.SuspendLayout();
             tableLayoutPanel5.SuspendLayout();
@@ -70,6 +86,9 @@ namespace WinFormsApp1
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             tableLayoutPanel2.SuspendLayout();
+            DescriptionTableLayoutPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)QPictureBox).BeginInit();
+            Description_contextMenuStrip.SuspendLayout();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -110,13 +129,68 @@ namespace WinFormsApp1
             // 
             // treeView
             // 
+            treeView.ContextMenuStrip = contextMenu_TreeView;
             treeView.Dock = DockStyle.Fill;
             treeView.Location = new Point(0, 0);
             treeView.Name = "treeView";
             treeView.Size = new Size(329, 527);
             treeView.TabIndex = 0;
             treeView.AfterSelect += TreeView_AfterSelect;
-
+            // 
+            // contextMenu_TreeView
+            // 
+            contextMenu_TreeView.Items.AddRange(new ToolStripItem[] { addNewSectionToolStripMenuItem, removeSelectedToolStripMenuItem });
+            contextMenu_TreeView.Name = "contextMenu_TreeView";
+            contextMenu_TreeView.Size = new Size(123, 48);
+            // 
+            // addNewSectionToolStripMenuItem
+            // 
+            addNewSectionToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addToolStripMenuItem, removeToolStripMenuItem, editToolStripMenuItem });
+            addNewSectionToolStripMenuItem.Name = "addNewSectionToolStripMenuItem";
+            addNewSectionToolStripMenuItem.Size = new Size(122, 22);
+            addNewSectionToolStripMenuItem.Text = "Section";
+            // 
+            // addToolStripMenuItem
+            // 
+            addToolStripMenuItem.Name = "addToolStripMenuItem";
+            addToolStripMenuItem.Size = new Size(117, 22);
+            addToolStripMenuItem.Text = "Add";
+            addToolStripMenuItem.Click += addToolStripMenuItem_Click;
+            // 
+            // removeToolStripMenuItem
+            // 
+            removeToolStripMenuItem.Name = "removeToolStripMenuItem";
+            removeToolStripMenuItem.Size = new Size(117, 22);
+            removeToolStripMenuItem.Text = "Remove";
+            removeToolStripMenuItem.Click += removeToolStripMenuItem_Click;
+            // 
+            // editToolStripMenuItem
+            // 
+            editToolStripMenuItem.Name = "editToolStripMenuItem";
+            editToolStripMenuItem.Size = new Size(117, 22);
+            editToolStripMenuItem.Text = "Edit";
+            editToolStripMenuItem.Click += editToolStripMenuItem_Click;
+            // 
+            // removeSelectedToolStripMenuItem
+            // 
+            removeSelectedToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addQuestionToolStripMenuItem, removeToolStripMenuItem1 });
+            removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
+            removeSelectedToolStripMenuItem.Size = new Size(122, 22);
+            removeSelectedToolStripMenuItem.Text = "Question";
+            // 
+            // addQuestionToolStripMenuItem
+            // 
+            addQuestionToolStripMenuItem.Name = "addQuestionToolStripMenuItem";
+            addQuestionToolStripMenuItem.Size = new Size(117, 22);
+            addQuestionToolStripMenuItem.Text = "Add";
+            addQuestionToolStripMenuItem.Click += addToolStripMenuItem1_Click;
+            // 
+            // removeToolStripMenuItem1
+            // 
+            removeToolStripMenuItem1.Name = "removeToolStripMenuItem1";
+            removeToolStripMenuItem1.Size = new Size(117, 22);
+            removeToolStripMenuItem1.Text = "Remove";
+            removeToolStripMenuItem1.Click += removeToolStripMenuItem1_Click;
             // 
             // tableLayoutPanel1
             // 
@@ -125,9 +199,9 @@ namespace WinFormsApp1
             tableLayoutPanel1.Controls.Add(tableLayoutPanel6, 0, 5);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel5, 0, 4);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel4, 0, 3);
-            tableLayoutPanel1.Controls.Add(richTextBox1, 0, 0);
             tableLayoutPanel1.Controls.Add(panel1, 0, 1);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 0, 2);
+            tableLayoutPanel1.Controls.Add(DescriptionTableLayoutPanel, 0, 0);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -246,15 +320,6 @@ namespace WinFormsApp1
             textBox2.Size = new Size(570, 76);
             textBox2.TabIndex = 1;
             // 
-            // richTextBox1
-            // 
-            richTextBox1.Dock = DockStyle.Fill;
-            richTextBox1.Location = new Point(3, 3);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(603, 135);
-            richTextBox1.TabIndex = 0;
-            richTextBox1.Text = "";
-            // 
             // panel1
             // 
             panel1.Controls.Add(label1);
@@ -330,6 +395,63 @@ namespace WinFormsApp1
             textBox1.Size = new Size(570, 76);
             textBox1.TabIndex = 1;
             // 
+            // DescriptionTableLayoutPanel
+            // 
+            DescriptionTableLayoutPanel.ColumnCount = 2;
+            DescriptionTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 70F));
+            DescriptionTableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
+            DescriptionTableLayoutPanel.Controls.Add(QPictureBox, 1, 0);
+            DescriptionTableLayoutPanel.Controls.Add(Description_textBox, 0, 0);
+            DescriptionTableLayoutPanel.Dock = DockStyle.Fill;
+            DescriptionTableLayoutPanel.Location = new Point(3, 3);
+            DescriptionTableLayoutPanel.Name = "DescriptionTableLayoutPanel";
+            DescriptionTableLayoutPanel.RowCount = 1;
+            DescriptionTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            DescriptionTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            DescriptionTableLayoutPanel.Size = new Size(603, 135);
+            DescriptionTableLayoutPanel.TabIndex = 8;
+            // 
+            // QPictureBox
+            // 
+            QPictureBox.Dock = DockStyle.Fill;
+            QPictureBox.Location = new Point(425, 3);
+            QPictureBox.Name = "QPictureBox";
+            QPictureBox.Size = new Size(175, 129);
+            QPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            QPictureBox.TabIndex = 0;
+            QPictureBox.TabStop = false;
+            QPictureBox.Click += QPictureBox_Click;
+            // 
+            // Description_textBox
+            // 
+            Description_textBox.ContextMenuStrip = Description_contextMenuStrip;
+            Description_textBox.Dock = DockStyle.Fill;
+            Description_textBox.Location = new Point(3, 3);
+            Description_textBox.Multiline = true;
+            Description_textBox.Name = "Description_textBox";
+            Description_textBox.Size = new Size(416, 129);
+            Description_textBox.TabIndex = 1;
+            // 
+            // Description_contextMenuStrip
+            // 
+            Description_contextMenuStrip.Items.AddRange(new ToolStripItem[] { addImageToolStripMenuItem, removeImageToolStripMenuItem });
+            Description_contextMenuStrip.Name = "Description_contextMenuStrip";
+            Description_contextMenuStrip.Size = new Size(181, 70);
+            // 
+            // addImageToolStripMenuItem
+            // 
+            addImageToolStripMenuItem.Name = "addImageToolStripMenuItem";
+            addImageToolStripMenuItem.Size = new Size(180, 22);
+            addImageToolStripMenuItem.Text = "Add image";
+            addImageToolStripMenuItem.Click += addImageToolStripMenuItem_Click;
+            // 
+            // removeImageToolStripMenuItem
+            // 
+            removeImageToolStripMenuItem.Name = "removeImageToolStripMenuItem";
+            removeImageToolStripMenuItem.Size = new Size(180, 22);
+            removeImageToolStripMenuItem.Text = "Remove image";
+            removeImageToolStripMenuItem.Click += removeImageToolStripMenuItem_Click;
+            // 
             // menuStrip1
             // 
             menuStrip1.Dock = DockStyle.None;
@@ -366,6 +488,12 @@ namespace WinFormsApp1
             tableLayoutPanel3.Size = new Size(200, 100);
             tableLayoutPanel3.TabIndex = 0;
             // 
+            // openFileDialog
+            // 
+            openFileDialog.FileName = "openFileDialog1";
+            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif";
+            openFileDialog.RestoreDirectory = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -384,6 +512,7 @@ namespace WinFormsApp1
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            contextMenu_TreeView.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel6.ResumeLayout(false);
             tableLayoutPanel6.PerformLayout();
@@ -396,6 +525,10 @@ namespace WinFormsApp1
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
             tableLayoutPanel2.ResumeLayout(false);
             tableLayoutPanel2.PerformLayout();
+            DescriptionTableLayoutPanel.ResumeLayout(false);
+            DescriptionTableLayoutPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)QPictureBox).EndInit();
+            Description_contextMenuStrip.ResumeLayout(false);
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
@@ -411,7 +544,6 @@ namespace WinFormsApp1
         private SplitContainer splitContainer1;
         private TreeView treeView;
         private TableLayoutPanel tableLayoutPanel1;
-        private RichTextBox richTextBox1;
         private Panel panel1;
         private Button button1;
         private NumericUpDown numericUpDown1;
@@ -430,5 +562,20 @@ namespace WinFormsApp1
         private TableLayoutPanel tableLayoutPanel4;
         private CheckBox checkBox2;
         private TextBox textBox2;
+        private ContextMenuStrip contextMenu_TreeView;
+        private ToolStripMenuItem addNewSectionToolStripMenuItem;
+        private ToolStripMenuItem removeSelectedToolStripMenuItem;
+        private ToolStripMenuItem addToolStripMenuItem;
+        private ToolStripMenuItem removeToolStripMenuItem;
+        private ToolStripMenuItem addQuestionToolStripMenuItem;
+        private ToolStripMenuItem removeToolStripMenuItem1;
+        private ToolStripMenuItem editToolStripMenuItem;
+        private TableLayoutPanel DescriptionTableLayoutPanel;
+        private PictureBox QPictureBox;
+        private TextBox Description_textBox;
+        private ContextMenuStrip Description_contextMenuStrip;
+        private ToolStripMenuItem addImageToolStripMenuItem;
+        private ToolStripMenuItem removeImageToolStripMenuItem;
+        private OpenFileDialog openFileDialog;
     }
 }
